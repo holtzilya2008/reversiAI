@@ -11,6 +11,17 @@ from ReversiPiece import *
 # Empty = None, White = 1, Black = 0
 #--------------------------------------------------------------------
 
+def getCellWeight(cell):
+	if cell[0] in [0, 11] and cell[1] in [0, 11]:
+		# Checking Corners
+		return 2
+	elif (cell[0] == 1 or cell[0]  == 10) and (cell[1]>0 and cell[1]<11):
+		return -1
+	elif (cell[1] == 1 or cell[1]  == 10) and (cell[0]>0 and cell[0]<11):
+		return -1
+	else:
+		return 0
+
 class LiteBoard:
 		
 
@@ -159,7 +170,21 @@ class LiteBoard:
 			for j in range (1,13):
 				print (self.boardData[i][j], end=" ")
 			print("\n")
-			
+
+
+	def calculateWeights(self, playerColor):
+		color = self.GetNumberByColor(playerColor)
+		enemyColor = self.flip(color)
+		playerWeights = 0
+		enemyWeights = 0
+		for i in range (1, 13):
+			for j in range (1,13):
+				if self.boardData[i, j] == color:
+					playerWeights += getCellWeight([i,j])
+				elif self.boardData[i, j] == enemyColor:
+					enemyWeights += getCellWeight([i,j])
+
+		return [playerWeights, enemyWeights]
 			
 	def CheckCorners(self, color):
 		count = 0
