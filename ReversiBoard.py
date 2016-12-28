@@ -12,12 +12,12 @@ from ReversiPiece import *
 #--------------------------------------------------------------------
 
 def getCellWeight(cell):
-	if cell[0] in [0, 11] and cell[1] in [0, 11]:
+	if cell[0] in [1, 12] and cell[1] in [1, 12]:
 		# Checking Corners
 		return 2
-	elif (cell[0] == 1 or cell[0]  == 10) and (cell[1]>0 and cell[1]<11):
+	elif (cell[0] == 2 or cell[0]  == 11) and (cell[1]>1 and cell[1]<12):
 		return -1
-	elif (cell[1] == 1 or cell[1]  == 10) and (cell[0]>0 and cell[0]<11):
+	elif (cell[1] == 2 or cell[1]  == 11) and (cell[0]>1 and cell[0]<12):
 		return -1
 	else:
 		return 0
@@ -30,7 +30,7 @@ class LiteBoard:
 		self.board = board
 		self.playerTeam = playerTeam
 		self.compTeam = compTeam
-		
+
 		#Copy constructor
 		if (lboard != None):
 			self.boardData = copy.deepcopy(lboard.boardData)
@@ -42,19 +42,41 @@ class LiteBoard:
 			for i in range(1,13):
 				row = []
 				row.append([])
+				firstOption = 0
+				secondOption = 0
+				thirdOption = 0
+				fourthOption = 0
+				fifthOption = 0
 				for j in range(1,13):
 					if board.boardData[i][j] == None:
+						firstOption += 1
 						row.append(None)
 					elif board.boardData[i][j] == []:
+						secondOption += 1
 						row.append([])
 					elif board.boardData[i][j] == "":
+						thirdOption += 1
 						row.append("")
 					else:
+						print(str(board.boardData[i][j].getTeam()))
 						if board.boardData[i][j].getTeam() == "white":
+							fourthOption += 1
 							row.append(1)
 						elif board.boardData[i][j].getTeam() == "black":
+							fifthOption += 1
 							row.append(0)
 				self.boardData.append(row)
+			
+			numrows = len(self.boardData)
+			print("numrows " + str(numrows))
+			for i in range(numrows):
+				print("numcols" + str(len(self.boardData[i])))
+					
+			with open("boardFile.txt", "w") as boardFile:
+				for i in range(1, 13):
+					for j in range(1, 13):
+						boardFile.write(str(self.boardData[i][j]) + " ")
+					boardFile.write("\n")
 			
 		
 	def getBoardData(self):
@@ -113,6 +135,11 @@ class LiteBoard:
 	# Returns all flippable tiles from a certain branch in a list.
 	# All square/tile coords must be sandwiched by two team colors.
 	def getOneBranchSwaps(self,branchSquares,playerColor):
+	
+		# numrows = len(self.boardData)
+		# print("numrows " + str(numrows))
+		# for i in range(numrows):
+			# print("numcols" + str(len(self.boardData[i])))
 		
 		if playerColor == "white":
 			pColor = 1
@@ -122,6 +149,7 @@ class LiteBoard:
 			eColor = 1
 		swaps = []
 		for sq in branchSquares:
+			# print(str(sq[0]) + ", " + str(sq[1]))
 			occ = self.boardData[sq[0]][sq[1]]
 
 			try: 

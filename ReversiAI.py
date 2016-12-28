@@ -22,14 +22,14 @@ AI_Constants = {
 # @return - move: a list of two items (coordinates on the board) that the current player should play next
 def getBestMinimaxMove(playerAColor, playerBColor, board, depth):
 	if depth == 5:
-		return h(board, playerAColor, playerBColor)
+		return h(board, playerAColor)
 	if depth % 2 == 1:
 		liteBoard = LiteBoard(board,playerAColor,playerBColor)  # translates the guiBoard
 		possibleMoves = liteBoard.getPossMoves(playerAColor, playerBColor)
 		bestMoveResult = -10000
 		for move in possibleMoves:
 		
-			liteBoard2 = LiteBoard(board,playerAColor,playerBColor, liteBoard.getBoardData())
+			liteBoard2 = LiteBoard(board,playerAColor,playerBColor, liteBoard)
 			liteBoard2.applyMove(move, playerAColor)
 			moveResult = getBestMinimaxMove(playerBColor, playerAColor, liteBoard2, depth+1)
 			if moveResult > bestMoveResult:
@@ -43,13 +43,12 @@ def getBestMinimaxMove(playerAColor, playerBColor, board, depth):
 		bestMoveResult = 10000
 		for move in possibleMoves:
 		
-			liteBoard2 = LiteBoard(board,playerAColor,playerBColor, liteBoard.getBoardData())
+			liteBoard2 = LiteBoard(board,playerAColor,playerBColor, liteBoard)
 			liteBoard2.applyMove(move, playerAColor)
 			moveResult = getBestMinimaxMove(playerBColor, playerAColor, liteBoard2, depth+1)
 			if moveResult < bestMoveResult:
 				bestMoveResult = moveResult
 				bestMove = move
-	bestMove = [5,6]
 	return bestMove
 
 # Alphabeta function:
@@ -63,9 +62,7 @@ def getBestAlphaBetaMove(playerAColor, playerBColor, board, depth, alpha, beta):
     #
     #
 
-def h(board, playerAColor, playerBColor):
-
-	def isEndOfGame
+def h(board, playerAColor):
 
 	aPiecesCount = 0
 	bPiecesCount = 0
@@ -77,10 +74,25 @@ def h(board, playerAColor, playerBColor):
 	else:
 		aPiecesCount = pieces[1]
 		bPiecesCount = pieceCount[0]
+	
+	weights = board.calculateWeights(playerAColor)
+	aWeights = weights[0]
+	bWeights = weights[1]
+	
+	if aPiecesCount + bPiecesCount >= 120:
+	
+		coeff = 0.9
 		
-	corners = board.CheckCorners(playerAColor, playerBColor)
-	aPiecesCount += corners[0]
-	bPiecesCount += corners[1]
+	else:
+	
+		coeff = 0.2
+		
+	value = coeff * (aPiecesCount - bPiecesCount) + (1-coeff) * (aWeights - bWeights)
+	return value
+	
+	
+	
+	
 	
 	#walls = board.CheckWalls(playerAColor)
 		
