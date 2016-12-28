@@ -158,7 +158,7 @@ class Game:
                     # and processes the click. 
                     if self.mode == "EVE": # AI move
                             if self.wAIstrategy == "minimax":
-                                move = getBestMinimaxMove(color,eColor,self.board, 1)
+                                move, result = getBestMinimaxMove(color,eColor,self.board, 1)
                             elif self.wAIstrategy == "alphabeta":
                                 move = getBestAlphaBetaMove(color,eColor,self.board, 2, 0, 0)
                     else: # human move
@@ -171,7 +171,7 @@ class Game:
                 else: # Player B move:
                     if self.mode == "EVE": # AI move
                         if self.bAIstrategy == "minimax":
-                                move = getBestMinimaxMove(color,eColor,self.board, 1)
+                                move, result = getBestMinimaxMove(color,eColor,self.board, 1)
                         elif self.bAIstrategy == "alphabeta":
                                 move = getBestAlphaBetaMove(color,eColor,self.board, 2, 0, 0)
                                 
@@ -192,7 +192,7 @@ class Game:
                             p = winTemp.getMouse()
         
                         if minimaxB.clicked(p):
-                            move = getBestMinimaxMove(color,eColor,self.board, 3)
+                            move, result = getBestMinimaxMove(color,eColor,self.board, 3)
                         elif alphabetaB.clicked(p):
                             move = getBestAlphaBetaMove(color,eColor,self.board, 2, 0, 0)
                            

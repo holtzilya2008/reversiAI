@@ -42,35 +42,24 @@ class LiteBoard:
 			for i in range(1,13):
 				row = []
 				row.append([])
-				firstOption = 0
-				secondOption = 0
-				thirdOption = 0
-				fourthOption = 0
-				fifthOption = 0
 				for j in range(1,13):
 					if board.boardData[i][j] == None:
-						firstOption += 1
 						row.append(None)
 					elif board.boardData[i][j] == []:
-						secondOption += 1
 						row.append([])
 					elif board.boardData[i][j] == "":
-						thirdOption += 1
 						row.append("")
 					else:
-						print(str(board.boardData[i][j].getTeam()))
-						if board.boardData[i][j].getTeam() == "white":
-							fourthOption += 1
+						#print("type is " + str(type(board.boardData[i][j])))
+						if board.boardData[i][j] == 1:
+							row.append(1)
+						elif board.boardData[i][j] == 0:
+							row.append(0)
+						elif board.boardData[i][j].getTeam() == "white":
 							row.append(1)
 						elif board.boardData[i][j].getTeam() == "black":
-							fifthOption += 1
 							row.append(0)
 				self.boardData.append(row)
-			
-			numrows = len(self.boardData)
-			print("numrows " + str(numrows))
-			for i in range(numrows):
-				print("numcols" + str(len(self.boardData[i])))
 					
 			with open("boardFile.txt", "w") as boardFile:
 				for i in range(1, 13):
@@ -207,9 +196,9 @@ class LiteBoard:
 		enemyWeights = 0
 		for i in range (1, 13):
 			for j in range (1,13):
-				if self.boardData[i, j] == color:
+				if self.boardData[i][j] == color:
 					playerWeights += getCellWeight([i,j])
-				elif self.boardData[i, j] == enemyColor:
+				elif self.boardData[i][j] == enemyColor:
 					enemyWeights += getCellWeight([i,j])
 
 		return [playerWeights, enemyWeights]
@@ -268,6 +257,19 @@ class LiteBoard:
 			return 1
 		else:
 			return 0
+			
+	def pieceCount(self):
+		wSco = 0
+		bSco = 0
+		for x in range(1,13):
+			for y in range(1,13):
+				pc = self.boardData[x][y]
+				if pc != None:
+					if pc == 1:
+						wSco += 1
+					else:
+						bSco += 1
+		return [wSco,bSco]
 
 
 	# def IfThreatened(self, color, cell):

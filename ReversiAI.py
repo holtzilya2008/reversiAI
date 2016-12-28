@@ -21,8 +21,6 @@ AI_Constants = {
 # @param board - an object of class Board for the board representation
 # @return - move: a list of two items (coordinates on the board) that the current player should play next
 def getBestMinimaxMove(playerAColor, playerBColor, board, depth):
-	if depth == 5:
-		return h(board, playerAColor)
 	if depth % 2 == 1:
 		liteBoard = LiteBoard(board,playerAColor,playerBColor)  # translates the guiBoard
 		possibleMoves = liteBoard.getPossMoves(playerAColor, playerBColor)
@@ -31,7 +29,7 @@ def getBestMinimaxMove(playerAColor, playerBColor, board, depth):
 		
 			liteBoard2 = LiteBoard(board,playerAColor,playerBColor, liteBoard)
 			liteBoard2.applyMove(move, playerAColor)
-			moveResult = getBestMinimaxMove(playerBColor, playerAColor, liteBoard2, depth+1)
+			move2, moveResult = getBestMinimaxMove(playerBColor, playerAColor, liteBoard2, depth+1)
 			if moveResult > bestMoveResult:
 				bestMoveResult = moveResult
 				bestMove = move
@@ -45,11 +43,15 @@ def getBestMinimaxMove(playerAColor, playerBColor, board, depth):
 		
 			liteBoard2 = LiteBoard(board,playerAColor,playerBColor, liteBoard)
 			liteBoard2.applyMove(move, playerAColor)
-			moveResult = getBestMinimaxMove(playerBColor, playerAColor, liteBoard2, depth+1)
+			if depth == 4:
+				moveResult = h(liteBoard2, playerBColor)
+			else:
+				move2, moveResult = getBestMinimaxMove(playerBColor, playerAColor, liteBoard2, depth+1)
 			if moveResult < bestMoveResult:
 				bestMoveResult = moveResult
 				bestMove = move
-	return bestMove
+	print(str(bestMoveResult) + " " + str(bestMove))
+	return bestMove, bestMoveResult
 
 # Alphabeta function:
 def getBestAlphaBetaMove(playerAColor, playerBColor, board, depth, alpha, beta):
@@ -64,16 +66,17 @@ def getBestAlphaBetaMove(playerAColor, playerBColor, board, depth, alpha, beta):
 
 def h(board, playerAColor):
 
+	
 	aPiecesCount = 0
 	bPiecesCount = 0
 	pieces = board.pieceCount()
 	boardData = board.getBoardData()
 	if playerAColor == "white":
 		aPiecesCount = pieces[0]
-		bPiecesCount = pieceCount[1]
+		bPiecesCount = pieces[1]
 	else:
 		aPiecesCount = pieces[1]
-		bPiecesCount = pieceCount[0]
+		bPiecesCount = pieces[0]
 	
 	weights = board.calculateWeights(playerAColor)
 	aWeights = weights[0]
