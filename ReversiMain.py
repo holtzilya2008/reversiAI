@@ -160,7 +160,7 @@ class Game:
                             if self.wAIstrategy == "minimax":
                                 move, result = getBestMinimaxMove(color,eColor,self.board, 1)
                             elif self.wAIstrategy == "alphabeta":
-                                move = getBestAlphaBetaMove(color,eColor,self.board, 2, 0, 0)
+                                move, result = getBestAlphaBetaMove(color,eColor,self.board, 1, -1000, 1000)
                     else: # human move
                         for m in possMoves:
                             self.board.drawHighlight(m)
@@ -173,7 +173,7 @@ class Game:
                         if self.bAIstrategy == "minimax":
                                 move, result = getBestMinimaxMove(color,eColor,self.board, 1)
                         elif self.bAIstrategy == "alphabeta":
-                                move = getBestAlphaBetaMove(color,eColor,self.board, 2, 0, 0)
+                                move, result = getBestAlphaBetaMove(color,eColor,self.board, 1, -1000, 1000)
                                 
                     if self.mode == "PVE": # AI move, but let the user choose the tactics for this move
                         winTemp = GraphWin("Select tactic", 400, 150)
@@ -192,9 +192,9 @@ class Game:
                             p = winTemp.getMouse()
         
                         if minimaxB.clicked(p):
-                            move, result = getBestMinimaxMove(color,eColor,self.board, 3)
+                            move, result = getBestMinimaxMove(color,eColor,self.board, 1)
                         elif alphabetaB.clicked(p):
-                            move = getBestAlphaBetaMove(color,eColor,self.board, 2, 0, 0)
+                            move, result = getBestAlphaBetaMove(color,eColor,self.board, 1, -1000, 1000)
                            
                         winTemp.close()    # close the "Choose tactics" window
                             

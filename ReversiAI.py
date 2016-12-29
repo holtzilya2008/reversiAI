@@ -7,7 +7,9 @@ from GuiBoard import *
 ###############################################################################
 AI_Constants = {
 	'baseCoeff': 100,
-	'totalCells': 144
+	'totalCells': 144,
+	'defaultBestMaxValue': -1000,
+	'defaultBestMinValue': 1000
 }
 ###############################################################################
 
@@ -21,24 +23,90 @@ AI_Constants = {
 # @param board - an object of class Board for the board representation
 # @return - move: a list of two items (coordinates on the board) that the current player should play next
 def getBestMinimaxMove(playerAColor, playerBColor, board, depth):
+	with open("Minimax.txt", "a") as minimaxFile:
+		minimaxFile.write("Depth is " + str(depth) + "\n")
 	if depth % 2 == 1:
 		liteBoard = LiteBoard(board,playerAColor,playerBColor)  # translates the guiBoard
-		possibleMoves = liteBoard.getPossMoves(playerAColor, playerBColor)
-		bestMoveResult = -10000
-		for move in possibleMoves:
-		
-			liteBoard2 = LiteBoard(board,playerAColor,playerBColor, liteBoard)
-			liteBoard2.applyMove(move, playerAColor)
-			move2, moveResult = getBestMinimaxMove(playerBColor, playerAColor, liteBoard2, depth+1)
-			if moveResult > bestMoveResult:
-				bestMoveResult = moveResult
-				bestMove = move
+		# possibleMoves = liteBoard.getPossMoves(playerAColor, playerBColor)
+		# bestMoveResult = -1000
+		with open("Minimax.txt", "a") as minimaxFile:
+			minimaxFile.write("Before get possMoves\n")
+			possibleMoves = liteBoard.getPossMoves(playerAColor, playerBColor)
+			bestMoveResult = -1000
+			minimaxFile.write("Possible moves: " + str(len(possibleMoves)) + "\n")
+			counter = 1
+			for move in possibleMoves:
+			
+				minimaxFile.write(str(counter) + " ")
+				liteBoard2 = LiteBoard(board,playerAColor,playerBColor, liteBoard)
+				liteBoard2.applyMove(move, playerAColor)
+				move2, moveResult = getBestMinimaxMove(playerBColor, playerAColor, liteBoard2, depth+1)
+				if moveResult > bestMoveResult:
+					bestMoveResult = moveResult
+					bestMove = move
+
+				counter += 1
+			minimaxFile.write("\n")
 				
 	else:
 	
 		liteBoard = LiteBoard(board,playerAColor,playerBColor)  # translates the guiBoard
+		# possibleMoves = liteBoard.getPossMoves(playerAColor, playerBColor)
+		# bestMoveResult = 1000
+		with open("Minimax.txt", "a") as minimaxFile:
+			minimaxFile.write("Before get possMoves\n")
+			possibleMoves = liteBoard.getPossMoves(playerAColor, playerBColor)
+			bestMoveResult = 1000
+			minimaxFile.write("Possible moves: " + str(len(possibleMoves)) + "\n")
+			counter = 1
+			for move in possibleMoves:
+			
+				minimaxFile.write(str(counter) + " ")
+				liteBoard2 = LiteBoard(board,playerAColor,playerBColor, liteBoard)
+				liteBoard2.applyMove(move, playerAColor)
+				if depth == 4:
+					moveResult = h(liteBoard2, playerBColor)
+				else:
+					move2, moveResult = getBestMinimaxMove(playerBColor, playerAColor, liteBoard2, depth+1)
+				if moveResult < bestMoveResult:
+					bestMoveResult = moveResult
+					bestMove = move
+
+				counter += 1
+			minimaxFile.write("\n")
+	print(str(bestMoveResult) + " " + str(bestMove))
+	return bestMove, bestMoveResult
+
+# Alphabeta function:
+def getBestAlphaBetaMove(playerAColor, playerBColor, board, depth, alpha, beta):
+	with open("AlphaBeta.txt", "a") as alphaFile:
+		alphaFile.write("\n")
+	if depth % 2 == 1:
+
+		liteBoard = LiteBoard(board,playerAColor,playerBColor)  # translates the guiBoard
 		possibleMoves = liteBoard.getPossMoves(playerAColor, playerBColor)
-		bestMoveResult = 10000
+		bestMoveResult = alpha
+		bestMove = None
+		for move in possibleMoves:
+		
+			liteBoard2 = LiteBoard(board,playerAColor,playerBColor, liteBoard)
+			liteBoard2.applyMove(move, playerAColor)
+			move2, moveResult = getBestAlphaBetaMove(playerBColor, playerAColor, liteBoard2, depth+1, bestMoveResult, beta)
+			if move2 == None:
+				continue
+			if moveResult >= beta:
+				return move, moveResult
+
+			if moveResult > bestMoveResult:
+				bestMoveResult = moveResult
+				bestMove = move
+
+	else:
+
+		liteBoard = LiteBoard(board,playerAColor,playerBColor)  # translates the guiBoard
+		possibleMoves = liteBoard.getPossMoves(playerAColor, playerBColor)
+		bestMoveResult = beta
+		bestMove = None
 		for move in possibleMoves:
 		
 			liteBoard2 = LiteBoard(board,playerAColor,playerBColor, liteBoard)
@@ -46,23 +114,18 @@ def getBestMinimaxMove(playerAColor, playerBColor, board, depth):
 			if depth == 4:
 				moveResult = h(liteBoard2, playerBColor)
 			else:
-				move2, moveResult = getBestMinimaxMove(playerBColor, playerAColor, liteBoard2, depth+1)
+				move2, moveResult = getBestAlphaBetaMove(playerBColor, playerAColor, liteBoard2, depth+1, alpha, bestMoveResult)
+				if move2 == None:
+					continue
+			if moveResult <= alpha:
+				return move, moveResult
+
 			if moveResult < bestMoveResult:
 				bestMoveResult = moveResult
 				bestMove = move
-	print(str(bestMoveResult) + " " + str(bestMove))
+
 	return bestMove, bestMoveResult
 
-# Alphabeta function:
-def getBestAlphaBetaMove(playerAColor, playerBColor, board, depth, alpha, beta):
-    
-    return 3
-	
-	#liteBoard = LiteBoard(board,playerAColor,playerBColor)
-    
-    #
-    #
-    #
 
 def h(board, playerAColor):
 
