@@ -11,18 +11,91 @@ from ReversiPiece import *
 # Empty = None, White = 1, Black = 0
 #--------------------------------------------------------------------
 
-def getCellWeight(cell):
+def getCellWeight(cell, leftUpperCorner, rightUpperCorner, leftBottomCorner, rightBottomCorner):
 	if cell[0] in [1, 12] and cell[1] in [1, 12]:
 		# Checking Corners
 		return 2
-	elif (cell[0] == 2 or cell[0]  == 11) and (cell[1]>1 and cell[1]<12):
-		return -1
-	elif (cell[1] == 2 or cell[1]  == 11) and (cell[0]>1 and cell[0]<12):
-		return -1
-	else:
-		return 0
+	# elif (cell[0] == 2 or cell[0]  == 11) and (cell[1]>1 and cell[1]<12):
+		# return -1
+	# elif (cell[1] == 2 or cell[1]  == 11) and (cell[0]>1 and cell[0]<12):
+		# return -1
+	elif cell[0] == 2 and cell[1] == 2:
+		if leftUpperCorner == True:
+			return 0
+		else:
+			return -3
+	elif cell[0] == 11 and cell[1] == 11:
+		if rightBottomCorner == True:
+			return 0
+		else:
+			return -3
+	elif cell[0] == 2 and cell[1] == 11:
+		if rightUpperCorner == True:
+			return 0
+		else:
+			return -3
+	elif cell[0] == 11 and cell[1] == 2:
+		if leftBottomCorner == True:
+			return 0
+		else:
+			return -3
+			
+	elif cell[0] == 1 and cell[1] == 2:
+		if leftUpperCorner == True:
+			return 0
+		else:
+			return -1.5
+	elif cell[0] == 1 and cell[1] == 11:
+		if rightUpperCorner == True:
+			return 0
+		else:
+			return -1.5
+			
+			
+	elif cell[0] == 2 and cell[1] == 1:
+		if leftUpperCorner == True:
+			return 0
+		else:
+			return -1.5
+	elif cell[0] == 2 and cell[1] == 12:
+		if rightUpperCorner == True:
+			return 0
+		else:
+			return -1.5
+			
+			
+	elif cell[0] == 11 and cell[1] == 1:
+		if leftBottomCorner == True:
+			return 0
+		else:
+			return -1.5
+	elif cell[0] == 11 and cell[1] == 12:
+		if rightBottomCorner == True:
+			return 0
+		else:
+			return -1.5
+			
+			
+	elif cell[0] == 12 and cell[1] == 2:
+		if leftBottomCorner == True:
+			return 0
+		else:
+			return -1.5
+	elif cell[0] == 12 and cell[1] == 11:
+		if rightBottomCorner == True:
+			return 0
+		else:
+			return -1.5
+			
+	return 0
+
 
 class LiteBoard:
+
+	leftUpperCornerConquered = False
+	rightUpperCornerConquered = False
+	leftBottomCornerConquered = False
+	rightBottomCornerConquered = False
 		
 
 	def __init__(self, board, playerTeam, compTeam, lboard=None):
@@ -30,6 +103,7 @@ class LiteBoard:
 		self.board = board
 		self.playerTeam = playerTeam
 		self.compTeam = compTeam
+		self.piecesCount = board.piecesCount
 
 		#Copy constructor
 		if (lboard != None):
@@ -73,6 +147,10 @@ class LiteBoard:
 	
 	# apply move on this board
 	def applyMove(self, move, playerColor):
+	
+		#print(type(move[0]))
+		# if type(move[0]) == str:
+			# print(move)
 			
 		if playerColor == "white":
 			self.boardData[move[0]][move[1]] = 1
@@ -197,11 +275,21 @@ class LiteBoard:
 		for i in range (1, 13):
 			for j in range (1,13):
 				if self.boardData[i][j] == color:
-					playerWeights += getCellWeight([i,j])
+					playerWeights += getCellWeight([i,j], self.leftUpperCornerConquered, self.rightUpperCornerConquered, self.leftBottomCornerConquered, self.rightBottomCornerConquered)
 				elif self.boardData[i][j] == enemyColor:
-					enemyWeights += getCellWeight([i,j])
+					enemyWeights += getCellWeight([i,j], self.leftUpperCornerConquered, self.rightUpperCornerConquered, self.leftBottomCornerConquered, self.rightBottomCornerConquered)
 
 		return [playerWeights, enemyWeights]
+		
+	def setCorners(self):
+		if self.boardData[1][1] == 1 or self.boardData[1][1] == 0:
+			self.leftUpperCornerConquered = True
+		if self.boardData[1][12] == 1 or self.boardData[1][12] == 0:
+			self.rightUpperCornerConquered = True
+		if self.boardData[12][1] == 1 or self.boardData[12][1] == 0:
+			self.leftBottomCornerConquered = True
+		if self.boardData[12][12] == 1 or self.boardData[12][12] == 0:
+			self.rightBottomCornerConquered = True
 			
 	def CheckCorners(self, color):
 		count = 0
