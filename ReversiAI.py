@@ -83,8 +83,7 @@ def getBestMinimaxMove(playerAColor, playerBColor, board, depth):
 # Alphabeta function:
 def getBestAlphaBetaMove(playerAColor, playerBColor, board, depth, alpha, beta):
 	piecesNumber = board.piecesCount
-	print(str(piecesNumber))
-	if piecesNumber >= 136:
+	if piecesNumber >= 130:
 		maxDepth = 8
 	else:
 		maxDepth = 3
@@ -205,6 +204,12 @@ def h(board, playerAColor):
 		piecesCoeff = 0.8
 		posMovesCoeff = 0.1
 		weightsCoeff = 0.1
+		
+	elif aPiecesCount + bPiecesCount >= 141:
+	
+		piecesCoeff = 1
+		posMovesCoeff = 0
+		weightsCoeff = 0
 		
 	else:
 	

@@ -87,6 +87,42 @@ def getCellWeight(cell, leftUpperCorner, rightUpperCorner, leftBottomCorner, rig
 		else:
 			return -1.5
 			
+			
+	elif cell[0] == 3:
+		if cell[1] in [1, 2, 3] and leftUpperCorner == False:
+			return 0.5
+		elif cell[1] in [10, 11, 12] and rightUpperCorner == False:
+			return 0.5
+		else:
+			return 0
+			
+	
+	elif cell[0] == 10:
+		if cell[1] in [1, 2, 3] and leftBottomCorner == False:
+			return 0.5
+		elif cell[1] in [10, 11, 12] and rightBottomCorner == False:
+			return 0.5
+		else:
+			return 0 
+			
+			
+	elif cell[1] == 3:
+		if cell[0] in [1, 2] and leftUpperCorner == False:
+			return 0.5
+		elif cell[0] in [11, 12] and leftBottomCorner == False:
+			return 0.5
+		else:
+			return 0 
+			
+			
+	elif cell[1] == 10:
+		if cell[0] in [1, 2] and rightUpperCorner == False:
+			return 0.5
+		elif cell[0] in [11, 12] and rightBottomCorner == False:
+			return 0.5
+		else:
+			return 0 
+	
 	return 0
 
 
