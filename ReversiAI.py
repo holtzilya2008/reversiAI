@@ -206,6 +206,29 @@ def getBestAlphaBetaMove(playerAColor, playerBColor, board, depth, alpha, beta):
 	return bestMove, bestMoveResult
 ### End of Alphabeta Implementation
 
+### The heuristic function h()
+# This function is used to evaluate 
+#
+# The Idea
+# We use 3 parameters:
+# 1) The number of ocupied cells of each player
+# 2) The number of possible moves of each player
+# 3) The weights of the cells on the board (explained in getCellWeight() in 
+#    ReversiBoard.py)
+#
+# Each of thease parameters has it's factor on the evaluation of the board at 
+# the current position. As we get closer to the end of the game, the number of 
+# cells becomes more important. 
+# In the begining and middle of the game, the main factor is the weight of 
+# the cells. The logic behind this, is that we should build a strong basis 
+# by using valueble cells. More about the weights of the cells is explained 
+# in ReversiBoard.py on the getCellWeight() function.
+#
+# If playerColor, doesn't have any ocupied cells at the current position, the 
+# function will return -AI_Constants['INFINITY'] (it means that he lost), on 
+# the other hand, if his opponent has no occupied cells, the function will 
+# return +AI_Constants['INFINITY'] (it means he won)
+#
 def h(board, playerAColor):
 	
 	aPiecesCount = 0

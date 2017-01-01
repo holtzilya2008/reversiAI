@@ -1,0 +1,13 @@
+How we got the idea of the heuristic function:
+
+The first thing we understood while playing the game 
+- Corners only didn't work
+- Then we tried to give the cells near the corners negative weights, didn't work
+- Then we gave positive weights to the cells on third level from the corner, 
+  and we noticed that that had a positive effect on the AI strategy.
+- At the begining we tried to give significant weight to the number of occupied 
+  cells, but soon we undrstood that in the beginning of the game this factor is less important. However, at the end of the game it becomes the most important factor.
+- We noticed that if we cut the opponent drawing diagonals in the middle of the board, we make more opportunities for us in the future. this factor can be translated to "having more possible moves in a future turn". 
+
+
+
