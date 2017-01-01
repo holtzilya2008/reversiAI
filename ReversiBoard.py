@@ -47,113 +47,113 @@ def getCellWeight(cell, leftUpperCorner, rightUpperCorner, leftBottomCorner, rig
 		'CORNER': 2,
 		'NEAR_CORNER_DIAGONAL': -3,
 		'NEAR_CORNER_OTHER': -1.5,
-		'3RD_LEVEL_NEAR_CORNER': 0.5,
-		'OTHER_CELLS: 0'
+		'THIRD_LEVEL_NEAR_CORNER': 0.5,
+		'OTHER_CELLS': 0
 	}
 	# Checking corners: value +2
 	if cell[0] in [1, 12] and cell[1] in [1, 12]:
-		return CellWeights[CORNER]
+		return CellWeights['CORNER']
 
 	# Checking the "cells near the corners". 
 	# The cells on the main diagonal : 
 	# value NEAR_CORNER_DIAGONAL, unless the corner is captured 
 	elif cell[0] == 2 and cell[1] == 2:
 		if leftUpperCorner == True:
-			return CellWeights[OTHER_CELLS]
+			return CellWeights['OTHER_CELLS']
 		else:
-			return CellWeights[NEAR_CORNER_DIAGONAL]
+			return CellWeights['NEAR_CORNER_DIAGONAL']
 	elif cell[0] == 11 and cell[1] == 11:
 		if rightBottomCorner == True:
-			return CellWeights[OTHER_CELLS]
+			return CellWeights['OTHER_CELLS']
 		else:
-			return CellWeights[NEAR_CORNER_DIAGONAL]
+			return CellWeights['NEAR_CORNER_DIAGONAL']
 	elif cell[0] == 2 and cell[1] == 11:
 		if rightUpperCorner == True:
-			return CellWeights[OTHER_CELLS]
+			return CellWeights['OTHER_CELLS']
 		else:
-			return CellWeights[NEAR_CORNER_DIAGONAL]
+			return CellWeights['NEAR_CORNER_DIAGONAL']
 	elif cell[0] == 11 and cell[1] == 2:
 		if leftBottomCorner == True:
-			return CellWeights[OTHER_CELLS]
+			return CellWeights['OTHER_CELLS']
 		else:
-			return CellWeights[NEAR_CORNER_DIAGONAL]
+			return CellWeights['NEAR_CORNER_DIAGONAL']
 			
 	# Other cells near the corners: 
 	# value NEAR_CORNER_OTHER, unless the corner is captured
 	elif cell[0] == 1 and cell[1] == 2:
 		if leftUpperCorner == True:
-			return CellWeights[OTHER_CELLS]
+			return CellWeights['OTHER_CELLS']
 		else:
-			return CellWeights[NEAR_CORNER_OTHER]
+			return CellWeights['NEAR_CORNER_OTHER']
 	elif cell[0] == 1 and cell[1] == 11:
 		if rightUpperCorner == True:
-			return CellWeights[OTHER_CELLS]
+			return CellWeights['OTHER_CELLS']
 		else:
-			return CellWeights[NEAR_CORNER_OTHER]
+			return CellWeights['NEAR_CORNER_OTHER']
 	elif cell[0] == 2 and cell[1] == 1:
 		if leftUpperCorner == True:
-			return CellWeights[OTHER_CELLS]
+			return CellWeights['OTHER_CELLS']
 		else:
-			return CellWeights[NEAR_CORNER_OTHER]
+			return CellWeights['NEAR_CORNER_OTHER']
 	elif cell[0] == 2 and cell[1] == 12:
 		if rightUpperCorner == True:
-			return CellWeights[OTHER_CELLS]
+			return CellWeights['OTHER_CELLS']
 		else:
-			return CellWeights[NEAR_CORNER_OTHER]
+			return CellWeights['NEAR_CORNER_OTHER']
 	elif cell[0] == 11 and cell[1] == 1:
 		if leftBottomCorner == True:
-			return CellWeights[OTHER_CELLS]
+			return CellWeights['OTHER_CELLS']
 		else:
-			return CellWeights[NEAR_CORNER_OTHER]
+			return CellWeights['NEAR_CORNER_OTHER']
 	elif cell[0] == 11 and cell[1] == 12:
 		if rightBottomCorner == True:
-			return CellWeights[OTHER_CELLS]
+			return CellWeights['OTHER_CELLS']
 		else:
-			return CellWeights[NEAR_CORNER_OTHER]
+			return CellWeights['NEAR_CORNER_OTHER']
 	elif cell[0] == 12 and cell[1] == 2:
 		if leftBottomCorner == True:
-			return CellWeights[OTHER_CELLS]
+			return CellWeights['OTHER_CELLS']
 		else:
-			return CellWeights[NEAR_CORNER_OTHER]
+			return CellWeights['NEAR_CORNER_OTHER']
 	elif cell[0] == 12 and cell[1] == 11:
 		if rightBottomCorner == True:
-			return CellWeights[OTHER_CELLS]
+			return CellWeights['OTHER_CELLS']
 		else:
-			return CellWeights[NEAR_CORNER_OTHER]
+			return CellWeights['NEAR_CORNER_OTHER']
 			
 	# cells in the "third level near the corner"
-	# value 3RD_LEVEL_NEAR_CORNER, unless the corner is captured
+	# value THIRD_LEVEL_NEAR_CORNER, unless the corner is captured
 	elif cell[0] == 3:
 		if cell[1] in [1, 2, 3] and leftUpperCorner == False:
-			return CellWeights[3RD_LEVEL_NEAR_CORNER]
+			return CellWeights['THIRD_LEVEL_NEAR_CORNER']
 		elif cell[1] in [10, 11, 12] and rightUpperCorner == False:
-			return CellWeights[3RD_LEVEL_NEAR_CORNER]
+			return CellWeights['THIRD_LEVEL_NEAR_CORNER']
 		else:
-			return CellWeights[OTHER_CELLS]
+			return CellWeights['OTHER_CELLS']
 	elif cell[0] == 10:
 		if cell[1] in [1, 2, 3] and leftBottomCorner == False:
-			return CellWeights[3RD_LEVEL_NEAR_CORNER]
+			return CellWeights['THIRD_LEVEL_NEAR_CORNER']
 		elif cell[1] in [10, 11, 12] and rightBottomCorner == False:
-			return CellWeights[3RD_LEVEL_NEAR_CORNER]
+			return CellWeights['THIRD_LEVEL_NEAR_CORNER']
 		else:
-			return CellWeights[OTHER_CELLS] 
+			return CellWeights['OTHER_CELLS'] 
 	elif cell[1] == 3:
 		if cell[0] in [1, 2] and leftUpperCorner == False:
-			return CellWeights[3RD_LEVEL_NEAR_CORNER]
+			return CellWeights['THIRD_LEVEL_NEAR_CORNER']
 		elif cell[0] in [11, 12] and leftBottomCorner == False:
-			return CellWeights[3RD_LEVEL_NEAR_CORNER]
+			return CellWeights['THIRD_LEVEL_NEAR_CORNER']
 		else:
-			return CellWeights[OTHER_CELLS] 
+			return CellWeights['OTHER_CELLS'] 
 	elif cell[1] == 10:
 		if cell[0] in [1, 2] and rightUpperCorner == False:
-			return CellWeights[3RD_LEVEL_NEAR_CORNER]
+			return CellWeights['THIRD_LEVEL_NEAR_CORNER']
 		elif cell[0] in [11, 12] and rightBottomCorner == False:
-			return CellWeights[3RD_LEVEL_NEAR_CORNER]
+			return CellWeights['THIRD_LEVEL_NEAR_CORNER']
 		else:
-			return CellWeights[OTHER_CELLS] 
+			return CellWeights['OTHER_CELLS'] 
 	
 	# All other cells on the board have the same weight.
-	return CellWeights[OTHER_CELLS]
+	return CellWeights['OTHER_CELLS']
 
 class LiteBoard:
 
