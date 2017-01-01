@@ -64,6 +64,7 @@ def getBestMinimaxMove(playerAColor, playerBColor, board, depth):
 				bestMoveResult = moveResult
 				bestMove = move
 
+			# Adding randomness
 			if moveResult == bestMoveResult:
 				randomNumber = randint(0,1)
 				if randomNumber == 1:
@@ -96,6 +97,7 @@ def getBestMinimaxMove(playerAColor, playerBColor, board, depth):
 				bestMoveResult = moveResult
 				bestMove = move
 
+			# Adding randomness
 			if moveResult == bestMoveResult:
 				randomNumber = randint(0,1)
 				if randomNumber == 1:
@@ -170,6 +172,7 @@ def getBestAlphaBetaMove(playerAColor, playerBColor, board, depth, alpha, beta):
 				bestMoveResult = moveResult
 				bestMove = move
 
+			# Adding randomness
 			if moveResult == bestMoveResult:
 				randomNumber = randint(0,1)
 				if randomNumber == 1:
@@ -180,16 +183,28 @@ def getBestAlphaBetaMove(playerAColor, playerBColor, board, depth, alpha, beta):
 	else:
 		bestMoveResult = beta
 		bestMove = None
+		# loop - for each of the possible moves:
 		for move in possibleMoves:
-		
+			# apply the move on liteBoard2 (auxiliary board)
 			liteBoard2 = LiteBoard(board,playerAColor,playerBColor, liteBoard)
 			liteBoard2.applyMove(move, playerAColor)
+
+			# If we reach the maximum search tree depth, 
+			# evaluate the board using the heuristic function h()	
 			if depth == maxDepth:
 				moveResult = h(liteBoard2, playerAColor)
+
+			# else - get down in the search tree (recursive call)
 			else:
 				move2, moveResult = getBestAlphaBetaMove(playerBColor, playerAColor, liteBoard2, depth+1, bestMoveResult, beta)
+				# If we don't have any possible moves in the further search
+				# we want to evaluete the board in the current level and then
+				# compare it to the best option we already have
 				if move2 == None:
 					moveResult = h(liteBoard2, playerBColor)
+
+			# AlphaBeta pruning : cut off the branch if the current 
+			# result greater then beta
 			if moveResult <= alpha:
 				return move, moveResult
 
@@ -197,6 +212,7 @@ def getBestAlphaBetaMove(playerAColor, playerBColor, board, depth, alpha, beta):
 				bestMoveResult = moveResult
 				bestMove = move
 
+			# Adding randomness
 			if moveResult == bestMoveResult:
 				randomNumber = randint(0,1)
 				if randomNumber == 1:
@@ -206,8 +222,13 @@ def getBestAlphaBetaMove(playerAColor, playerBColor, board, depth, alpha, beta):
 	return bestMove, bestMoveResult
 ### End of Alphabeta Implementation
 
+
+
 ### The heuristic function h()
-# This function is used to evaluate 
+# This function is used to evaluate the board in it's current position
+# @param board - The Liteboard on witch we make the evaluation
+# @param playerAColor - string "black" or "white"
+# @return - The value of the board in it's current position
 #
 # The Idea
 # We use 3 parameters:
