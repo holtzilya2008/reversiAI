@@ -25,8 +25,8 @@ maxDepth = 3
 # @return - move: a list of two items (coordinates on the board) that the current player should play next
 def getBestMinimaxMove(playerAColor, playerBColor, board, depth):
 	piecesNumber = board.piecesCount
-	if piecesNumber >= 136:
-		maxDepth = 8
+	if piecesNumber >= 130:
+		maxDepth = 10
 	else:
 		maxDepth = 3
 	
