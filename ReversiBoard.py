@@ -11,120 +11,149 @@ from ReversiPiece import *
 # Empty = None, White = 1, Black = 0
 #--------------------------------------------------------------------
 
+# function - used by the heuristic function h() in reversi AI.py
+# to determine the weight of a specific cell on the board
+# @param cell : a list of two items (x,y)
+# @param leftUpperCorner : *
+# @param rightUpperCorner : *
+# @param leftBottomCorner : *
+# @param rightBottomCorner : *
+# 	* four boolean params that tell if the corners are captured
+# @returnes : The weight of the given cell on the board
+# 
+# The Idea: 
+# According to the strategy of the Reversi game, there are a better and worse
+# positions that the player could be in.
+# 1) Taking the Corners: this can be an advantage, because the opponent
+#    can't take them back. each corner gives us opportunities to capture 
+#    cells on the main diagonal and the side row and column. 
+#    The corners will have value +2
+# 2) The "cells near the corners" are dangerous, in case the corners 
+#	 are not captured yet.
+#    If we take for example the corner (1,1), we can are talking about 
+#    the cells : (1,2),(2,1),(2,2)
+#    The near the corner on the  main diagonal will have a value of -3, 
+#    it is the most dangerous. (2,2) in our example.
+# 3) Other cells near the corner will have value -1.5. 
+#    in our example (1,2), (2,1)
+# 4) The cells in the "third level to the corner" are better then other cells
+#    (in our example its: [1,3],[2,3],[3,3],[3,2],[3,1]) when we take them, 
+#    at the end we leave the oponnent no choise but to step on the dangerous
+#    ones (the cells near the corner) 
+#    So we gice them a value of +0.5
+#
 def getCellWeight(cell, leftUpperCorner, rightUpperCorner, leftBottomCorner, rightBottomCorner):
+	CellWeights = {
+		'CORNER': 2,
+		'NEAR_CORNER_DIAGONAL': -3,
+		'NEAR_CORNER_OTHER': -1.5,
+		'3RD_LEVEL_NEAR_CORNER': 0.5,
+		'OTHER_CELLS: 0'
+	}
+	# Checking corners: value +2
 	if cell[0] in [1, 12] and cell[1] in [1, 12]:
-		# Checking Corners
-		return 2
-	# elif (cell[0] == 2 or cell[0]  == 11) and (cell[1]>1 and cell[1]<12):
-		# return -1
-	# elif (cell[1] == 2 or cell[1]  == 11) and (cell[0]>1 and cell[0]<12):
-		# return -1
+		return CellWeights[CORNER]
+
+	# Checking the "cells near the corners". 
+	# The cells on the main diagonal : 
+	# value NEAR_CORNER_DIAGONAL, unless the corner is captured 
 	elif cell[0] == 2 and cell[1] == 2:
 		if leftUpperCorner == True:
-			return 0
+			return CellWeights[OTHER_CELLS]
 		else:
-			return -3
+			return CellWeights[NEAR_CORNER_DIAGONAL]
 	elif cell[0] == 11 and cell[1] == 11:
 		if rightBottomCorner == True:
-			return 0
+			return CellWeights[OTHER_CELLS]
 		else:
-			return -3
+			return CellWeights[NEAR_CORNER_DIAGONAL]
 	elif cell[0] == 2 and cell[1] == 11:
 		if rightUpperCorner == True:
-			return 0
+			return CellWeights[OTHER_CELLS]
 		else:
-			return -3
+			return CellWeights[NEAR_CORNER_DIAGONAL]
 	elif cell[0] == 11 and cell[1] == 2:
 		if leftBottomCorner == True:
-			return 0
+			return CellWeights[OTHER_CELLS]
 		else:
-			return -3
+			return CellWeights[NEAR_CORNER_DIAGONAL]
 			
+	# Other cells near the corners: 
+	# value NEAR_CORNER_OTHER, unless the corner is captured
 	elif cell[0] == 1 and cell[1] == 2:
 		if leftUpperCorner == True:
-			return 0
+			return CellWeights[OTHER_CELLS]
 		else:
-			return -1.5
+			return CellWeights[NEAR_CORNER_OTHER]
 	elif cell[0] == 1 and cell[1] == 11:
 		if rightUpperCorner == True:
-			return 0
+			return CellWeights[OTHER_CELLS]
 		else:
-			return -1.5
-			
-			
+			return CellWeights[NEAR_CORNER_OTHER]
 	elif cell[0] == 2 and cell[1] == 1:
 		if leftUpperCorner == True:
-			return 0
+			return CellWeights[OTHER_CELLS]
 		else:
-			return -1.5
+			return CellWeights[NEAR_CORNER_OTHER]
 	elif cell[0] == 2 and cell[1] == 12:
 		if rightUpperCorner == True:
-			return 0
+			return CellWeights[OTHER_CELLS]
 		else:
-			return -1.5
-			
-			
+			return CellWeights[NEAR_CORNER_OTHER]
 	elif cell[0] == 11 and cell[1] == 1:
 		if leftBottomCorner == True:
-			return 0
+			return CellWeights[OTHER_CELLS]
 		else:
-			return -1.5
+			return CellWeights[NEAR_CORNER_OTHER]
 	elif cell[0] == 11 and cell[1] == 12:
 		if rightBottomCorner == True:
-			return 0
+			return CellWeights[OTHER_CELLS]
 		else:
-			return -1.5
-			
-			
+			return CellWeights[NEAR_CORNER_OTHER]
 	elif cell[0] == 12 and cell[1] == 2:
 		if leftBottomCorner == True:
-			return 0
+			return CellWeights[OTHER_CELLS]
 		else:
-			return -1.5
+			return CellWeights[NEAR_CORNER_OTHER]
 	elif cell[0] == 12 and cell[1] == 11:
 		if rightBottomCorner == True:
-			return 0
+			return CellWeights[OTHER_CELLS]
 		else:
-			return -1.5
+			return CellWeights[NEAR_CORNER_OTHER]
 			
-			
+	# cells in the "third level near the corner"
+	# value 3RD_LEVEL_NEAR_CORNER, unless the corner is captured
 	elif cell[0] == 3:
 		if cell[1] in [1, 2, 3] and leftUpperCorner == False:
-			return 0.5
+			return CellWeights[3RD_LEVEL_NEAR_CORNER]
 		elif cell[1] in [10, 11, 12] and rightUpperCorner == False:
-			return 0.5
+			return CellWeights[3RD_LEVEL_NEAR_CORNER]
 		else:
-			return 0
-			
-	
+			return CellWeights[OTHER_CELLS]
 	elif cell[0] == 10:
 		if cell[1] in [1, 2, 3] and leftBottomCorner == False:
-			return 0.5
+			return CellWeights[3RD_LEVEL_NEAR_CORNER]
 		elif cell[1] in [10, 11, 12] and rightBottomCorner == False:
-			return 0.5
+			return CellWeights[3RD_LEVEL_NEAR_CORNER]
 		else:
-			return 0 
-			
-			
+			return CellWeights[OTHER_CELLS] 
 	elif cell[1] == 3:
 		if cell[0] in [1, 2] and leftUpperCorner == False:
-			return 0.5
+			return CellWeights[3RD_LEVEL_NEAR_CORNER]
 		elif cell[0] in [11, 12] and leftBottomCorner == False:
-			return 0.5
+			return CellWeights[3RD_LEVEL_NEAR_CORNER]
 		else:
-			return 0 
-			
-			
+			return CellWeights[OTHER_CELLS] 
 	elif cell[1] == 10:
 		if cell[0] in [1, 2] and rightUpperCorner == False:
-			return 0.5
+			return CellWeights[3RD_LEVEL_NEAR_CORNER]
 		elif cell[0] in [11, 12] and rightBottomCorner == False:
-			return 0.5
+			return CellWeights[3RD_LEVEL_NEAR_CORNER]
 		else:
-			return 0 
+			return CellWeights[OTHER_CELLS] 
 	
-	return 0
-
+	# All other cells on the board have the same weight.
+	return CellWeights[OTHER_CELLS]
 
 class LiteBoard:
 
@@ -132,7 +161,7 @@ class LiteBoard:
 	rightUpperCornerConquered = False
 	leftBottomCornerConquered = False
 	rightBottomCornerConquered = False
-		
+
 
 	def __init__(self, board, playerTeam, compTeam, lboard=None):
 
@@ -394,138 +423,3 @@ class LiteBoard:
 					else:
 						bSco += 1
 		return [wSco,bSco]
-
-
-	# def IfThreatened(self, color, cell):
-	# 	xIndex = cell[0]
-	# 	yIndex = cell[1]
-		
-	# 	playerNumber = self.GetNumberByColor(color)
-	# 	enemyNumber = self.flip(playerNumber)
-		
-	# 	xMinus = False
-	# 	xPlus = False
-	# 	yMinus = False
-	# 	yPlus = False
-		
-	# 	if xIndex > 1:
-		
-	# 		xMinus = True
-		
-	# 		if self.boardData[xIndex-1, yIndex] == playerNumber:
-			
-	# 			xIndex -= 2
-		
-	# 			while xIndex > 0:
-		
-	# 				if self.boardData[xIndex, yIndex] == enemyNumber:
-					
-	# 					return True
-						
-	# 				elif self.boardData[xIndex, yIndex] == playerNumber:
-					
-	# 					xIndex -= 1
-						
-	# 				else:
-					
-	# 					break
-						
-	# 	xIndex = cell[0]
-		
-	# 	if xIndex < 12:
-		
-	# 		xPlus = True
-		
-	# 		if self.boardData[xIndex+1, yIndex] == playerNumber:
-			
-	# 			xIndex += 2
-		
-	# 			while xIndex < 13:
-		
-	# 				if self.boardData[xIndex, yIndex] == enemyNumber:
-					
-	# 					return True
-						
-	# 				elif self.boardData[xIndex, yIndex] == playerNumber:
-					
-	# 					xIndex += 1
-						
-	# 				else:
-					
-	# 					break
-						
-	# 	xIndex = cell[0]
-		
-	# 	if yIndex > 1:
-		
-	# 		yMinus = True
-		
-	# 		if self.boardData[xIndex, yIndex-1] == playerNumber:
-			
-	# 			yIndex -= 2
-		
-	# 			while yIndex > 0:
-		
-	# 				if self.boardData[xIndex, yIndex] == enemyNumber:
-					
-	# 					return True
-						
-	# 				elif self.boardData[xIndex, yIndex] == playerNumber:
-					
-	# 					yIndex -= 1
-						
-	# 				else:
-					
-	# 					break
-						
-	# 	yIndex = cell[1]
-		
-	# 	if yIndex < 12:
-		
-	# 		yPlus = True
-		
-	# 		if self.boardData[xIndex, yIndex+1] == playerNumber:
-			
-	# 			yIndex += 2
-		
-	# 			while yIndex < 13:
-		
-	# 				if self.boardData[xIndex, yIndex] == enemyNumber:
-					
-	# 					return True
-						
-	# 				elif self.boardData[xIndex, yIndex] == playerNumber:
-					
-	# 					yIndex += 1
-						
-	# 				else:
-					
-	# 					break
-
-						
-	# 	if xMinus == True:
-		
-	# 		if yMinus == True:
-			
-	# 			xIndex = cell[0]
-	# 			yIndex = cell[1]
-			
-	# 			if self.boardData[xIndex-1, yIndex-1] == playerNumber:
-			
-	# 			xIndex -= 2
-	# 			yIndex -= 2
-		
-	# 			while xIndex > 0 and yIndex > 0:
-		
-	# 				if self.boardData[xIndex, yIndex] == enemyNumber:
-					
-	# 					return True
-						
-	# 				elif self.boardData[xIndex, yIndex] == playerNumber:
-					
-	# 					xIndex -= 1
-	# 					yIndex -= 1
-						
-	# 				else:
-					
-	# 					break
