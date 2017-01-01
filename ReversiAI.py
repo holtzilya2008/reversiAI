@@ -6,49 +6,57 @@ from GuiBoard import *
 # Constants
 ###############################################################################
 AI_Constants = {
-	'baseCoeff': 100,
-	'totalCells': 144,
-	'defaultBestMaxValue': -1000,
-	'defaultBestMinValue': 1000
+	'PIECES_TO_FULL_SEARCH': 136,
+	'FULL_SEARCH_DEPTH': 8,
+	'MAX_SEARCH_TREE_DEPTH': 3,
+	'INFINITY': 10000 
 }
 ###############################################################################
 
-# function - used by the heuristic function h to determine the weight 
-# of a specific cell on the board
-
-maxDepth = 3
-
-# Minimax function:
+### Minimax Implementation:
+#
 # @param playerAColor - string "black" or "white"
 # @param playerBColor - string "black" or "white"
 # @param board - an object of class Board for the board representation
-# @return - move: a list of two items (coordinates on the board) that the current player should play next
+# @return - move, value: The move object is the cordinates of the next cell
+# we should take (x,y) and the calculated value for this move
 def getBestMinimaxMove(playerAColor, playerBColor, board, depth):
 	piecesNumber = board.piecesCount
-	if piecesNumber >= 130:
-		maxDepth = 10
+	if piecesNumber >= AI_Constants['PIECES_TO_FULL_SEARCH']:
+		maxDepth = AI_Constants['FULL_SEARCH_DEPTH']
 	else:
-		maxDepth = 3
-	
-	liteBoard = LiteBoard(board,playerAColor,playerBColor)  # translates the guiBoard
+		maxDepth = AI_Constants['MAX_SEARCH_TREE_DEPTH']
+
+	# Translate the guiBoard to Liteboard
+	liteBoard = LiteBoard(board,playerAColor,playerBColor)
+	# Set Indicator that tells if the corners are captured or not
 	liteBoard.setCorners()
 	possibleMoves = liteBoard.getPossMoves(playerAColor, playerBColor)
 	if possibleMoves == "No moves":
 		return None, None
-			
+
+	# The Maximizer turn			
 	if depth % 2 == 1:
-		
-		bestMoveResult = -1000
+		bestMoveResult = -AI_Constants['INFINITY']
+		# loop - for each of the possible moves:
 		for move in possibleMoves:
+			# apply the move on liteBoard2 (auxiliary board)
 			liteBoard2 = LiteBoard(board,playerAColor,playerBColor, liteBoard)
 			liteBoard2.applyMove(move, playerAColor)
 			
+			# If we reach the maximum search tree depth, 
+			# evaluate the board using the heuristic function h()
 			if depth == maxDepth:
 				with open("Minimax.txt", "a") as minimaxFile:
 					minimaxFile.write("Heuristic function\n")
 				moveResult = h(liteBoard2, playerAColor)
+
+			# else - get down in the search tree (recursive call)
 			else:
 				move2, moveResult = getBestMinimaxMove(playerBColor, playerAColor, liteBoard2, depth+1)
+				# If we don't have any possible moves in the further search
+				# we want to evaluete the board in the current leveland then
+				# compare it to the best option we already have
 				if move2 == None:
 					with open("Minimax.txt", "a") as minimaxFile:
 						minimaxFile.write("Heuristic function\n")
@@ -56,18 +64,27 @@ def getBestMinimaxMove(playerAColor, playerBColor, board, depth):
 			if moveResult > bestMoveResult:
 				bestMoveResult = moveResult
 				bestMove = move
-				
-	else:
-	
-		bestMoveResult = 1000
-		for move in possibleMoves:
 
+	# The Minimizer turn		
+	else:
+		bestMoveResult = AI_Constants['INFINITY']
+		# loop - for each of the possible moves:
+		for move in possibleMoves:
+			# apply the move on liteBoard2 (auxiliary board)
 			liteBoard2 = LiteBoard(board,playerAColor,playerBColor, liteBoard)
-			liteBoard2.applyMove(move, playerAColor)		
+			liteBoard2.applyMove(move, playerAColor)	
+
+			# If we reach the maximum search tree depth, 
+			# evaluate the board using the heuristic function h()	
 			if depth == maxDepth:
 				moveResult = h(liteBoard2, playerBColor)
+
+			# else - get down in the search tree (recursive call)
 			else:
 				move2, moveResult = getBestMinimaxMove(playerBColor, playerAColor, liteBoard2, depth+1)
+				# If we don't have any possible moves in the further search
+				# we want to evaluete the board in the current level and then
+				# compare it to the best option we already have
 				if move2 == None:
 					with open("Minimax.txt", "a") as minimaxFile:
 						minimaxFile.write("Heuristic function\n")
@@ -80,7 +97,20 @@ def getBestMinimaxMove(playerAColor, playerBColor, board, depth):
 			minimaxFile.write("\n\n\n")
 	return bestMove, bestMoveResult
 
-# Alphabeta function:
+### End of Minimax Implementation
+
+### Alphabeta Implementation:
+#
+# @param playerAColor - string "black" or "white"
+# @param playerBColor - string "black" or "white"
+# @param board - an object of class Board for the board representation
+# @param depth - defines in witch level of the search tree we are now
+# @param alpha - best already explored option, along the path to the root
+# for the Maximizer
+# @param beta - best already explored option, along the path to the root
+# for the Minimizer
+# @return - move, value: The move object is the cordinates of the next cell
+# we should take (x,y) and the calculated value for this move
 def getBestAlphaBetaMove(playerAColor, playerBColor, board, depth, alpha, beta):
 	piecesNumber = board.piecesCount
 	if piecesNumber >= 130:
@@ -166,7 +196,7 @@ def getBestAlphaBetaMove(playerAColor, playerBColor, board, depth, alpha, beta):
 			
 	#print(str(bestMoveResult) + " " + str(bestMove))
 	return bestMove, bestMoveResult
-
+### End of Alphabeta Implementation
 
 def h(board, playerAColor):
 	
