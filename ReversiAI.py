@@ -2,11 +2,12 @@
 from ReversiPiece import *
 from ReversiBoard import *
 from GuiBoard import *
+from random import randint
 
 # Constants
 ###############################################################################
 AI_Constants = {
-	'PIECES_TO_FULL_SEARCH': 136,
+	'PIECES_TO_FULL_SEARCH': 130,
 	'FULL_SEARCH_DEPTH': 8,
 	'MAX_SEARCH_TREE_DEPTH': 3,
 	'INFINITY': 10000 
@@ -49,8 +50,6 @@ def getBestMinimaxMove(playerAColor, playerBColor, board, depth):
 			# If we reach the maximum search tree depth, 
 			# evaluate the board using the heuristic function h()
 			if depth == maxDepth:
-				with open("Minimax.txt", "a") as minimaxFile:
-					minimaxFile.write("Heuristic function\n")
 				moveResult = h(liteBoard2, playerAColor)
 
 			# else - get down in the search tree (recursive call)
@@ -60,12 +59,16 @@ def getBestMinimaxMove(playerAColor, playerBColor, board, depth):
 				# we want to evaluete the board in the current leveland then
 				# compare it to the best option we already have
 				if move2 == None:
-					with open("Minimax.txt", "a") as minimaxFile:
-						minimaxFile.write("Heuristic function\n")
 					moveResult = h(liteBoard2, playerAColor)
 			if moveResult > bestMoveResult:
 				bestMoveResult = moveResult
 				bestMove = move
+
+			if moveResult == bestMoveResult:
+				randomNumber = randint(0,1)
+				if randomNumber == 1:
+					bestMoveResult = moveResult
+					bestMove = move
 
 	# The Minimizer turn		
 	else:
@@ -92,9 +95,13 @@ def getBestMinimaxMove(playerAColor, playerBColor, board, depth):
 			if moveResult < bestMoveResult:
 				bestMoveResult = moveResult
 				bestMove = move
-	if depth == 1:
-		with open("Minimax.txt", "a") as minimaxFile:
-			minimaxFile.write("\n\n\n")
+
+			if moveResult == bestMoveResult:
+				randomNumber = randint(0,1)
+				if randomNumber == 1:
+					bestMoveResult = moveResult
+					bestMove = move
+
 	return bestMove, bestMoveResult
 
 ### End of Minimax Implementation
@@ -115,17 +122,15 @@ def getBestAlphaBetaMove(playerAColor, playerBColor, board, depth, alpha, beta):
 
 	# determine if we can do "Full search"
 	piecesNumber = board.piecesCount
-	if piecesNumber >= 130:
-		maxDepth = 8
+	if piecesNumber >= AI_Constants['PIECES_TO_FULL_SEARCH']:
+		maxDepth = AI_Constants['FULL_SEARCH_DEPTH']
 	else:
-		maxDepth = 3
+		maxDepth = AI_Constants['MAX_SEARCH_TREE_DEPTH']
 
 	# Translate the guiBoard to Liteboard
 	liteBoard = LiteBoard(board,playerAColor,playerBColor)
 	# Set Indicator that tells if the corners are captured or not
 	liteBoard.setCorners()
-	with open("AlphaBeta.txt", "a") as alphaFile:
-		alphaFile.write("Before get possMoves\n")
 	possibleMoves = liteBoard.getPossMoves(playerAColor, playerBColor)
 	if possibleMoves == "No moves":
 		return None, None
@@ -165,6 +170,12 @@ def getBestAlphaBetaMove(playerAColor, playerBColor, board, depth, alpha, beta):
 				bestMoveResult = moveResult
 				bestMove = move
 
+			if moveResult == bestMoveResult:
+				randomNumber = randint(0,1)
+				if randomNumber == 1:
+					bestMoveResult = moveResult
+					bestMove = move
+
 	# The Minimizer turn
 	else:
 		bestMoveResult = beta
@@ -185,6 +196,12 @@ def getBestAlphaBetaMove(playerAColor, playerBColor, board, depth, alpha, beta):
 			if moveResult < bestMoveResult:
 				bestMoveResult = moveResult
 				bestMove = move
+
+			if moveResult == bestMoveResult:
+				randomNumber = randint(0,1)
+				if randomNumber == 1:
+					bestMoveResult = moveResult
+					bestMove = move
 
 	return bestMove, bestMoveResult
 ### End of Alphabeta Implementation
@@ -219,6 +236,11 @@ def h(board, playerAColor):
 		bPossibleMoves = 0
 	else:
 		bPossibleMoves = len(bPossibleMoves)
+
+	if aPiecesCount == 0:
+		return -1000
+	elif bPiecesCount == 0:
+		return 1000
 	
 	if aPiecesCount + bPiecesCount >= 138:
 	
