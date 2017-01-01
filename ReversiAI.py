@@ -21,6 +21,8 @@ AI_Constants = {
 # @return - move, value: The move object is the cordinates of the next cell
 # we should take (x,y) and the calculated value for this move
 def getBestMinimaxMove(playerAColor, playerBColor, board, depth):
+
+	# determine if we can do "Full search"
 	piecesNumber = board.piecesCount
 	if piecesNumber >= AI_Constants['PIECES_TO_FULL_SEARCH']:
 		maxDepth = AI_Constants['FULL_SEARCH_DEPTH']
@@ -86,8 +88,6 @@ def getBestMinimaxMove(playerAColor, playerBColor, board, depth):
 				# we want to evaluete the board in the current level and then
 				# compare it to the best option we already have
 				if move2 == None:
-					with open("Minimax.txt", "a") as minimaxFile:
-						minimaxFile.write("Heuristic function\n")
 					moveResult = h(liteBoard2, playerBColor)
 			if moveResult < bestMoveResult:
 				bestMoveResult = moveResult
@@ -112,64 +112,63 @@ def getBestMinimaxMove(playerAColor, playerBColor, board, depth):
 # @return - move, value: The move object is the cordinates of the next cell
 # we should take (x,y) and the calculated value for this move
 def getBestAlphaBetaMove(playerAColor, playerBColor, board, depth, alpha, beta):
+
+	# determine if we can do "Full search"
 	piecesNumber = board.piecesCount
 	if piecesNumber >= 130:
 		maxDepth = 8
 	else:
 		maxDepth = 3
+
+	# Translate the guiBoard to Liteboard
+	liteBoard = LiteBoard(board,playerAColor,playerBColor)
+	# Set Indicator that tells if the corners are captured or not
+	liteBoard.setCorners()
+	with open("AlphaBeta.txt", "a") as alphaFile:
+		alphaFile.write("Before get possMoves\n")
+	possibleMoves = liteBoard.getPossMoves(playerAColor, playerBColor)
+	if possibleMoves == "No moves":
+		return None, None
+
+	# The MAximizer turn
 	if depth % 2 == 1:
 
-		liteBoard = LiteBoard(board,playerAColor,playerBColor)  # translates the guiBoard
-		liteBoard.setCorners()
-		with open("AlphaBeta.txt", "a") as alphaFile:
-			alphaFile.write("Before get possMoves\n")
-		possibleMoves = liteBoard.getPossMoves(playerAColor, playerBColor)
-		if possibleMoves == "No moves":
-			return None, None
 		bestMoveResult = alpha
 		bestMove = None
-		with open("AlphaBeta.txt", "a") as alphaFile:
-			alphaFile.write("Possible moves: " + str(len(possibleMoves)) + "\n")
-		counter = 1
-		#print("Alphabeta 1")
+
+		# loop - for each of the possible moves:
 		for move in possibleMoves:
-		
+			# apply the move on liteBoard2 (auxiliary board)
 			liteBoard2 = LiteBoard(board,playerAColor,playerBColor, liteBoard)
 			liteBoard2.applyMove(move, playerAColor)
-				
+			
+			# If we reach the maximum search tree depth, 
+			# evaluate the board using the heuristic function h()	
 			if depth == maxDepth:
 				moveResult = h(liteBoard2, playerAColor)
+
+			# else - get down in the search tree (recursive call)			
 			else:
 				move2, moveResult = getBestAlphaBetaMove(playerBColor, playerAColor, liteBoard2, depth+1, alpha, bestMoveResult)
+				# If we don't have any possible moves in the further search
+				# we want to evaluete the board in the current level and then
+				# compare it to the best option we already have
 				if move2 == None:
 					moveResult = h(liteBoard2, playerAColor)
+			
+			# AlphaBeta pruning : cut off the branch if the current 
+			# result greater then beta
 			if moveResult >= beta:
 				return move, moveResult
 
 			if moveResult > bestMoveResult:
 				bestMoveResult = moveResult
 				bestMove = move
-				
-			counter += 1
-			
-		with open("AlphaBeta.txt", "a") as alphaFile:
-			alphaFile.write("\n")
 
+	# The Minimizer turn
 	else:
-
-		liteBoard = LiteBoard(board,playerAColor,playerBColor)  # translates the guiBoard
-		liteBoard.setCorners()
-		with open("AlphaBeta.txt", "a") as alphaFile:
-			alphaFile.write("Before get possMoves\n")
-		possibleMoves = liteBoard.getPossMoves(playerAColor, playerBColor)
-		if possibleMoves == "No moves":
-			return None, None
 		bestMoveResult = beta
 		bestMove = None
-		with open("AlphaBeta.txt", "a") as alphaFile:
-			alphaFile.write("Possible moves: " + str(len(possibleMoves)) + "\n")
-		counter = 1
-		#print("Alphabeta 2")
 		for move in possibleMoves:
 		
 			liteBoard2 = LiteBoard(board,playerAColor,playerBColor, liteBoard)
@@ -186,15 +185,7 @@ def getBestAlphaBetaMove(playerAColor, playerBColor, board, depth, alpha, beta):
 			if moveResult < bestMoveResult:
 				bestMoveResult = moveResult
 				bestMove = move
-				
-				
-			counter += 1
-			
-		with open("AlphaBeta.txt", "a") as alphaFile:
-			alphaFile.write("\n")
 
-			
-	#print(str(bestMoveResult) + " " + str(bestMove))
 	return bestMove, bestMoveResult
 ### End of Alphabeta Implementation
 
