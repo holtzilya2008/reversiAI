@@ -9,7 +9,7 @@ from random import randint
 AI_Constants = {
 	'PIECES_TO_FULL_SEARCH': 130,
 	'FULL_SEARCH_DEPTH': 8,
-	'MAX_SEARCH_TREE_DEPTH': 3,
+	'MAX_SEARCH_TREE_DEPTH': 5,
 	'INFINITY': 10000 
 }
 ###############################################################################

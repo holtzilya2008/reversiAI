@@ -10,4 +10,7 @@ The first thing we understood while playing the game
 - We noticed that if we cut the opponent drawing diagonals in the middle of the board, we make more opportunities for us in the future. this factor can be translated to "having more possible moves in a future turn". 
 
 
-
+Questions to Simha: 
+1) The presentation process?
+2) Are we both need to be present?
+3) How he will run the program?
