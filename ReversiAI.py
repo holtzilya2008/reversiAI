@@ -11,7 +11,21 @@ AI_Constants = {
 	'FULL_SEARCH_DEPTH': 8,
 	'MAX_SEARCH_TREE_DEPTH': 5,
 	'INFINITY': 10000 
+
+	#The Heuristic function
+	'GAME_BEGIN_PIECES_FACTOR': 0.2,
+	'GAME_BEGIN_POSSIBLE_MOVES_FACTOR': 0.15,
+	'GAME_BEGIN_WEIGHTS_FACTOR': 0.65,
+	'GAME_LATE_PIECES': 138,
+	'GAME_LATE_PIECES_FACTOR': 0.8,
+	'GAME_LATE_POSSIBLE_MOVES_FACTOR': 0.1,
+	'GAME_LATE_WEIGHTS_FACTOR': 0.1,
+	'GAME_END_PIECES': 141,
+	'GAME_END_PIECES_FACTOR': 1,
+	'GAME_END_POSSIBLE_MOVES_FACTOR': 0,
+	'GAME_END_WEIGHTS_FACTOR': 0
 }
+
 ###############################################################################
 
 ### Minimax Implementation:
@@ -251,7 +265,8 @@ def getBestAlphaBetaMove(playerAColor, playerBColor, board, depth, alpha, beta):
 # return +AI_Constants['INFINITY'] (it means he won)
 #
 def h(board, playerAColor):
-	
+
+	#Counting black and white pieces on the liteBoard (auxiliary board)
 	aPiecesCount = 0
 	bPiecesCount = 0
 	pieces = board.pieceCount()
@@ -269,6 +284,7 @@ def h(board, playerAColor):
 	
 	playerBColor = board.flip(playerAColor)
 	
+	#Counting the possible moves of each player
 	aPossibleMoves = board.getPossMoves(playerAColor, playerBColor)
 	if aPossibleMoves == "No moves":
 		aPossibleMoves = 0
@@ -281,28 +297,29 @@ def h(board, playerAColor):
 	else:
 		bPossibleMoves = len(bPossibleMoves)
 
+	# If tho opponent captured all our pieces, we lose. and the oposite.
 	if aPiecesCount == 0:
-		return -1000
+		return -AI_Constants['INFINITY']
 	elif bPiecesCount == 0:
-		return 1000
+		return AI_Constants['INFINITY']
 	
-	if aPiecesCount + bPiecesCount >= 138:
+	if aPiecesCount + bPiecesCount >= AI_Constants['GAME_LATE_PIECES']:
 	
-		piecesCoeff = 0.8
-		posMovesCoeff = 0.1
-		weightsCoeff = 0.1
+		piecesCoeff = AI_Constants['GAME_LATE_PIECES_FACTOR']
+		posMovesCoeff = AI_Constants['GAME_LATE_POSSIBLE_MOVES_FACTOR']
+		weightsCoeff = AI_Constants['GAME_LATE_WEIGHTS_FACTOR']
 		
-	elif aPiecesCount + bPiecesCount >= 141:
+	elif aPiecesCount + bPiecesCount >= AI_Constants['GAME_END_PIECES']:
 	
-		piecesCoeff = 1
-		posMovesCoeff = 0
-		weightsCoeff = 0
+		piecesCoeff = AI_Constants['GAME_END_PIECES_FACTOR']
+		posMovesCoeff = AI_Constants['GAME_END_POSSIBLE_MOVES_FACTOR']
+		weightsCoeff = AI_Constants['GAME_END_WEIGHTS_FACTOR']
 		
 	else:
 	
-		piecesCoeff = 0.2
-		posMovesCoeff = 0.15
-		weightsCoeff = 0.65
+		piecesCoeff = AI_Constants['GAME_BEGIN_PIECES_FACTOR']
+		posMovesCoeff = AI_Constants['GAME_BEGIN_POSSIBLE_MOVES_FACTOR']
+		weightsCoeff = AI_Constants['GAME_BEGIN_WEIGHTS_FACTOR']
 		
 	value = piecesCoeff * (aPiecesCount - bPiecesCount) + weightsCoeff * (aWeights - bWeights) + posMovesCoeff * (aPossibleMoves - bPossibleMoves)
 	return value
