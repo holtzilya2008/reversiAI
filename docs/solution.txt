@@ -12,6 +12,7 @@ The first thing we understood while playing the game
 
 Questions to Simha: 
 1) The presentation process?
-- 
-2) Are we both need to be present?
-3) How he will run the program?
+- No presentation, submission only
+2) Are we both need to be present? No
+3) How he will run the program? 
+- need to convert the file to .exe
