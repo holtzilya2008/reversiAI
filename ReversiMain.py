@@ -10,6 +10,10 @@ import time
 
 def getHeuristicCoefficients():
     winTemp = GraphWin("Welcome to Reversi!", 600, 200)
+    title = Text(Point(210, 40), "Enter heuristic arguments values")
+    title.setSize(14)
+    title.setFace('courier')
+    title.draw(winTemp)
             
     occupiedCellsText = Text(Point(90, 100), "Occupied cells:")
     occupiedCellsText.setSize(12)
@@ -81,6 +85,10 @@ def getHeuristicCoefficients():
     
 def getDepth():
     winTemp = GraphWin("Welcome to Reversi!", 600, 200)
+    title = Text(Point(150, 60), "Enter max depth")
+    title.setSize(14)
+    title.setFace('courier')
+    title.draw(winTemp)
     depthText = Text(Point(150, 100), "Depth:")
     depthText.setSize(12)
     depthText.setFace('courier')
