@@ -44,10 +44,10 @@ from ReversiPiece import *
 #
 def getCellWeight(cell, leftUpperCorner, rightUpperCorner, leftBottomCorner, rightBottomCorner):
 	CellWeights = {
-		'CORNER': 2,
-		'NEAR_CORNER_DIAGONAL': -3,
-		'NEAR_CORNER_OTHER': -1.5,
-		'THIRD_LEVEL_NEAR_CORNER': 0.5,
+		'CORNER': 8,
+		'NEAR_CORNER_DIAGONAL': -12,
+		'NEAR_CORNER_OTHER': -6,
+		'THIRD_LEVEL_NEAR_CORNER': 2,
 		'OTHER_CELLS': 0
 	}
 	# Checking corners: value +2

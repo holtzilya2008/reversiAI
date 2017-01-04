@@ -9,7 +9,7 @@ from random import randint
 AI_Constants = {
 	'PIECES_TO_FULL_SEARCH': 130,
 	'FULL_SEARCH_DEPTH': 8,
-	'MAX_SEARCH_TREE_DEPTH': 5,
+	'MAX_SEARCH_TREE_DEPTH': 3,
 	'INFINITY': 10000,
 
 	#The Heuristic function
@@ -35,14 +35,13 @@ AI_Constants = {
 # @param board - an object of class Board for the board representation
 # @return - move, value: The move object is the cordinates of the next cell
 # we should take (x,y) and the calculated value for this move
-def getBestMinimaxMove(playerAColor, playerBColor, board, depth):
+def getBestMinimaxMove(playerAColor, playerBColor, board, coefficients, currentDepth, maxDepth):
 
 	# determine if we can do "Full search"
 	piecesNumber = board.piecesCount
-	if piecesNumber >= AI_Constants['PIECES_TO_FULL_SEARCH']:
+	if piecesNumber >= AI_Constants['PIECES_TO_FULL_SEARCH'] and AI_Constants['PIECES_TO_FULL_SEARCH'] > maxDepth:
 		maxDepth = AI_Constants['FULL_SEARCH_DEPTH']
-	else:
-		maxDepth = AI_Constants['MAX_SEARCH_TREE_DEPTH']
+
 
 	# Translate the guiBoard to Liteboard
 	liteBoard = LiteBoard(board,playerAColor,playerBColor)
@@ -53,7 +52,7 @@ def getBestMinimaxMove(playerAColor, playerBColor, board, depth):
 		return None, None
 
 	# The Maximizer turn			
-	if depth % 2 == 1:
+	if currentDepth % 2 == 1:
 		bestMoveResult = -AI_Constants['INFINITY']
 		# loop - for each of the possible moves:
 		for move in possibleMoves:
@@ -63,17 +62,17 @@ def getBestMinimaxMove(playerAColor, playerBColor, board, depth):
 			
 			# If we reach the maximum search tree depth, 
 			# evaluate the board using the heuristic function h()
-			if depth == maxDepth:
-				moveResult = h(liteBoard2, playerAColor)
+			if currentDepth == maxDepth:
+				moveResult = h(liteBoard2, playerAColor, coefficients)
 
 			# else - get down in the search tree (recursive call)
 			else:
-				move2, moveResult = getBestMinimaxMove(playerBColor, playerAColor, liteBoard2, depth+1)
+				move2, moveResult = getBestMinimaxMove(playerBColor, playerAColor, liteBoard2, coefficients, currentDepth+1, maxDepth)
 				# If we don't have any possible moves in the further search
 				# we want to evaluete the board in the current leveland then
 				# compare it to the best option we already have
 				if move2 == None:
-					moveResult = h(liteBoard2, playerAColor)
+					moveResult = h(liteBoard2, playerAColor, coefficients)
 			if moveResult > bestMoveResult:
 				bestMoveResult = moveResult
 				bestMove = move
@@ -96,17 +95,17 @@ def getBestMinimaxMove(playerAColor, playerBColor, board, depth):
 
 			# If we reach the maximum search tree depth, 
 			# evaluate the board using the heuristic function h()	
-			if depth == maxDepth:
-				moveResult = h(liteBoard2, playerBColor)
+			if currentDepth == maxDepth:
+				moveResult = h(liteBoard2, playerBColor, coefficients)
 
 			# else - get down in the search tree (recursive call)
 			else:
-				move2, moveResult = getBestMinimaxMove(playerBColor, playerAColor, liteBoard2, depth+1)
+				move2, moveResult = getBestMinimaxMove(playerBColor, playerAColor, liteBoard2, coefficients, currentDepth+1, maxDepth)
 				# If we don't have any possible moves in the further search
 				# we want to evaluete the board in the current level and then
 				# compare it to the best option we already have
 				if move2 == None:
-					moveResult = h(liteBoard2, playerBColor)
+					moveResult = h(liteBoard2, playerBColor, coefficients)
 			if moveResult < bestMoveResult:
 				bestMoveResult = moveResult
 				bestMove = move
@@ -134,14 +133,13 @@ def getBestMinimaxMove(playerAColor, playerBColor, board, depth):
 # for the Minimizer
 # @return - move, value: The move object is the cordinates of the next cell
 # we should take (x,y) and the calculated value for this move
-def getBestAlphaBetaMove(playerAColor, playerBColor, board, depth, alpha, beta):
+def getBestAlphaBetaMove(playerAColor, playerBColor, board, coefficients, currentDepth, maxDepth, alpha, beta):
 
 	# determine if we can do "Full search"
 	piecesNumber = board.piecesCount
 	if piecesNumber >= AI_Constants['PIECES_TO_FULL_SEARCH']:
 		maxDepth = AI_Constants['FULL_SEARCH_DEPTH']
-	else:
-		maxDepth = AI_Constants['MAX_SEARCH_TREE_DEPTH']
+
 
 	# Translate the guiBoard to Liteboard
 	liteBoard = LiteBoard(board,playerAColor,playerBColor)
@@ -152,7 +150,7 @@ def getBestAlphaBetaMove(playerAColor, playerBColor, board, depth, alpha, beta):
 		return None, None
 
 	# The MAximizer turn
-	if depth % 2 == 1:
+	if currentDepth % 2 == 1:
 
 		bestMoveResult = alpha
 		bestMove = None
@@ -165,17 +163,17 @@ def getBestAlphaBetaMove(playerAColor, playerBColor, board, depth, alpha, beta):
 			
 			# If we reach the maximum search tree depth, 
 			# evaluate the board using the heuristic function h()	
-			if depth == maxDepth:
-				moveResult = h(liteBoard2, playerAColor)
+			if currentDepth == maxDepth:
+				moveResult = h(liteBoard2, playerAColor, coefficients)
 
 			# else - get down in the search tree (recursive call)			
 			else:
-				move2, moveResult = getBestAlphaBetaMove(playerBColor, playerAColor, liteBoard2, depth+1, alpha, bestMoveResult)
+				move2, moveResult = getBestAlphaBetaMove(playerBColor, playerAColor, liteBoard2, coefficients, currentDepth+1, maxDepth, alpha, bestMoveResult)
 				# If we don't have any possible moves in the further search
 				# we want to evaluete the board in the current level and then
 				# compare it to the best option we already have
 				if move2 == None:
-					moveResult = h(liteBoard2, playerAColor)
+					moveResult = h(liteBoard2, playerAColor, coefficients)
 			
 			# AlphaBeta pruning : cut off the branch if the current 
 			# result greater then beta
@@ -205,17 +203,17 @@ def getBestAlphaBetaMove(playerAColor, playerBColor, board, depth, alpha, beta):
 
 			# If we reach the maximum search tree depth, 
 			# evaluate the board using the heuristic function h()	
-			if depth == maxDepth:
-				moveResult = h(liteBoard2, playerAColor)
+			if currentDepth == maxDepth:
+				moveResult = h(liteBoard2, playerAColor, coefficients)
 
 			# else - get down in the search tree (recursive call)
 			else:
-				move2, moveResult = getBestAlphaBetaMove(playerBColor, playerAColor, liteBoard2, depth+1, bestMoveResult, beta)
+				move2, moveResult = getBestAlphaBetaMove(playerBColor, playerAColor, liteBoard2, coefficients, currentDepth+1, maxDepth, bestMoveResult, beta)
 				# If we don't have any possible moves in the further search
 				# we want to evaluete the board in the current level and then
 				# compare it to the best option we already have
 				if move2 == None:
-					moveResult = h(liteBoard2, playerBColor)
+					moveResult = h(liteBoard2, playerBColor, coefficients)
 
 			# AlphaBeta pruning : cut off the branch if the current 
 			# result greater then beta
@@ -264,7 +262,7 @@ def getBestAlphaBetaMove(playerAColor, playerBColor, board, depth, alpha, beta):
 # the other hand, if his opponent has no occupied cells, the function will 
 # return +AI_Constants['INFINITY'] (it means he won)
 #
-def h(board, playerAColor):
+def h(board, playerAColor, coefficients):
 
 	#Counting black and white pieces on the liteBoard (auxiliary board)
 	aPiecesCount = 0
@@ -317,9 +315,9 @@ def h(board, playerAColor):
 		
 	else:
 	
-		piecesCoeff = AI_Constants['GAME_BEGIN_PIECES_FACTOR']
-		posMovesCoeff = AI_Constants['GAME_BEGIN_POSSIBLE_MOVES_FACTOR']
-		weightsCoeff = AI_Constants['GAME_BEGIN_WEIGHTS_FACTOR']
+		piecesCoeff = coefficients[0]
+		posMovesCoeff = coefficients[1]
+		weightsCoeff = coefficients[2]
 		
 	value = piecesCoeff * (aPiecesCount - bPiecesCount) + weightsCoeff * (aWeights - bWeights) + posMovesCoeff * (aPossibleMoves - bPossibleMoves)
 	return value
