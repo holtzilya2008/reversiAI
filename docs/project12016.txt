@@ -1,0 +1,51 @@
+Project1.   AI COURSE   Dr. Larry Manevitz Lecturer
+
+Due Date:  Dec 18 (BEFORE CLASS)
+0 points off if by Dec 20 (BEFORE CLASS)4 points off  submitted up to one week late.  Afterwards,
+each class late is -4 pts.
+
+You are required to work in groups of 2 - 3 consisting of two subgroups of 2-3.  The entire group can work together on the framework (e.g. graphics, etc) of the game.  
+
+This year, I will ask everyone to work on a variant of OTHELLO (also called REVERSI).   It is played as usual but on a board of 12 x 12  (instead of 8 x 8 as usual).   
+
+You may work in groups of at least 2 - 3  
+
+You should write your program in  a  modular  way,  as  you  have learned in other courses.
+
+Each of you will be examined individually on the game and you 
+will get individual grades based on your responses.  
+
+A better game will get a better grade; and there will be some weight to the presentation. 
+
+Minimal Requirements:
+
+   1. Both mini-max and alpha beta have to be implemented.
+The choice of which to use is a run-time decision.
+
+   2. The choice of depth is a run-time decision.
+
+   3.  Sufficient graphics so you can play the game.  
+ 
+   4.  Some choice of the heuristic function.  Please explain
+the reason for the heuristic and any experiments you did with 
+it.   
+
+You should also check for legality of move entry so as not to 
+cause a long game to be lost because of a keyboard error.
+(This is an advantage of a GUI display.)
+
+   5. You should allow your game to play against itself with different heuristics (as well as against a human opponent).
+
+   6.  (desirable but not crucial).  Add an option to allow two separate programs (e.g. from another group to play against each other).   To do this the communication should be by another file which always has   (player whose move it is,  (white or black),  the current state of the board as a 12 x 12 matrix with entries (0, 1, 2)  where 0 is blank, 1 is white, 2 is black).
+
+Other Games (Ask for approval):
+
+
+Language:  Any standard language you are comfortable in is acceptable. (C, C++, Python ,  ...)
+
+Graphic interface:  You will need something, in order to play the game.   The most primitive, would be ,e.g. an ASCII output
+of letters indicating the board; but I am sure you can do better.   It is OK to collaborate on graphics, or to download it.
+
+Remember to make  it  clear  to the player how to enter a move.  AND TO PROTECT AGAINST ILLEGAL KEY ENTRIES.
+
+You are allowed to help each other, but you should explain what was done on your submission.
